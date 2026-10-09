@@ -1,0 +1,8 @@
+node_modules/
+release/
+test-results/
+playwright-report/
+artifacts/
+output/
+.build-cache/
+*.log
