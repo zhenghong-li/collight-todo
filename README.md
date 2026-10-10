@@ -8,7 +8,7 @@
 
 ## 使用
 
-在 [Releases](https://github.com/zhenghong-li/collight-todo/releases) 下载 `Mori-Setup-1.3.0.exe`，双击安装后从桌面快捷方式“拾光待办”打开。安装版无需另装 Node.js。升级会保留原有待办和自启动设置。
+在 [Releases](https://github.com/zhenghong-li/collight-todo/releases) 下载最新的 `Mori-Setup` 安装包，双击安装后从桌面快捷方式“拾光待办”打开。安装版无需另装 Node.js。升级会保留原有待办和自启动设置。
 
 自行构建时，安装包位于 `release/`。也可以直接运行 `release/win-unpacked/Mori.exe`，但需要保留整个 `win-unpacked` 文件夹。
 
@@ -25,6 +25,7 @@
 - 拖动挂件顶部可换位置，拖动边缘可调整大小；位置、大小独立于完整看板保存。
 - 图钉只控制挂件置顶，默认关闭。旁边的方框按钮让挂件回到右下角，减号暂时收起到托盘。
 - 挂件不占用任务栏按钮。点击托盘图标或桌面快捷方式可以唤回。
+- **设置入口**：点击月历右上角的“设置”，直接调整开机自启动、当前窗口置顶、不透明度或备份数据。关闭设置后回到月历。
 
 ### 整理时：完整看板
 

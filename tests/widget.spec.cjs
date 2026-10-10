@@ -32,6 +32,15 @@ test('starts as a small bottom-right widget and switches to the full board on de
   expect(initial.y + initial.height).toBe(work.y + work.height - 18);
   await expect(page.locator('.app-layout')).toBeHidden();
   await expect(page.locator('#widget-save-status')).toBeInViewport();
+  const boards = (await page.evaluate(() => window.mori.load())).boards;
+  await expect(page.locator('#widget-settings')).toBeInViewport();
+  await page.locator('#widget-settings').click();
+  await mode('widget');
+  await expect(page.locator('#settings-dialog')).toBeVisible();
+  await expect(page.locator('#setting-autostart')).toBeInViewport();
+  await page.screenshot({ path: path.join(root, 'output/playwright/widget-settings.png') });
+  await page.locator('#settings-dialog [data-close]').click();
+  expect((await page.evaluate(() => window.mori.load())).boards).toEqual(boards);
   expect(await app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()[0].isAlwaysOnTop())).toBe(false);
   await page.getByRole('button', { name: '完整看板', exact: true }).click();
   await mode('editor');
@@ -76,7 +85,9 @@ test('completion, undo, and full edits share one live data set across modes and 
 });
 
 test('widget and editor keep independent sizes, positions, and pin preferences', async () => {
-  await page.locator('#widget-pin').click();
+  await page.locator('#widget-settings').click();
+  await page.locator('#setting-top').check();
+  await page.locator('#settings-dialog [data-close]').click();
   await expect.poll(() => app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()[0].isAlwaysOnTop())).toBe(true);
   await app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()[0].setBounds({ x: 50, y: 70, width: 400, height: 540 }));
   const widgetBounds = await bounds();
@@ -116,6 +127,13 @@ test('filters, small-window scrolling, and save errors remain usable in the widg
   await page.locator('#widget-save-status').click();
   await expect(page.locator('#widget-save-status')).toContainText('本机已保存');
   await app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()[0].setSize(360, 470));
+  await page.locator('#widget-settings').click();
+  await expect(page.locator('#setting-autostart')).toBeInViewport();
+  await page.locator('#quit-app').scrollIntoViewIfNeeded();
+  await expect(page.locator('#quit-app')).toBeInViewport();
+  await expect(page.locator('#settings-dialog [data-close]')).toBeInViewport();
+  expect(await page.locator('#settings-dialog').evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
+  await page.locator('#settings-dialog [data-close]').click();
   await expect(page.locator('#widget-expand')).toBeInViewport();
   await expect(page.locator('#widget-save-status')).toBeInViewport();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);

@@ -161,7 +161,7 @@ function renderSettings() {
   $('#setting-autostart').checked = state.settings.autoStart && state.canAutoStart;
   $('#setting-autostart').disabled = !state.canAutoStart;
   $('#startup-description').textContent = state.canAutoStart ? '登录 Windows 后，显示右下角的桌面挂件' : '打包后的桌面版支持开机启动';
-  $('#setting-top').checked = state.settings.alwaysOnTop;
+  $('#setting-top').checked = state.settings[presentation === 'widget' ? 'widgetAlwaysOnTop' : 'alwaysOnTop'];
   $('#setting-completed').checked = state.settings.showCompleted;
   $('#setting-opacity').value = state.settings.opacity;
   $('#opacity-output').textContent = `${state.settings.opacity}%`;
@@ -345,10 +345,16 @@ $('#delete-item').addEventListener('click', () => {
   else removeTask(editContext.boardId, editContext.taskId);
 });
 $('#confirm-delete').addEventListener('click', () => { $('#confirm-dialog').close(); deleteAction?.(); deleteAction = null; });
-$('#settings-button').addEventListener('click', () => { renderSettings(); $('#settings-dialog').showModal(); });
+function openSettings() {
+  renderSettings();
+  $('#settings-dialog').showModal();
+  $('#settings-dialog').scrollTop = 0;
+}
+$('#settings-button').addEventListener('click', openSettings);
+$('#widget-settings').addEventListener('click', openSettings);
 $('#pin-window').addEventListener('click', () => setSettings({ alwaysOnTop: !state.settings.alwaysOnTop }));
 $('#setting-autostart').addEventListener('change', event => setSettings({ autoStart: event.target.checked }));
-$('#setting-top').addEventListener('change', event => setSettings({ alwaysOnTop: event.target.checked }));
+$('#setting-top').addEventListener('change', event => setSettings({ [presentation === 'widget' ? 'widgetAlwaysOnTop' : 'alwaysOnTop']: event.target.checked }));
 $('#setting-completed').addEventListener('change', event => { expandedBoards.clear(); setSettings({ showCompleted: event.target.checked }); });
 $('#setting-opacity').addEventListener('input', event => { $('#opacity-output').textContent = `${event.target.value}%`; });
 $('#setting-opacity').addEventListener('change', event => setSettings({ opacity: Number(event.target.value) }));
